@@ -11,13 +11,10 @@ void main() => runApp(Align(
         child: MaterialApp(
           theme: ThemeData(
             // brightness: Brightness.dark,
-            // primaryColorBrightness: Brightness.dark,
-            // primaryColor: Colors.cyan[900], //AppColors.darkBlue,
-            // accentColor: Colors.white,
-            // hintColor: Colors.white
-            // textTheme: ),
-            primaryColor: Colors.cyan[900], //AppColors.darkBlue,
-            accentColor: Colors.cyan[800], //AppColors.darkBlue,
+            primaryColorBrightness: Brightness.dark,
+
+            primaryColor: Colors.blueGrey[900], //AppColors.darkBlue,
+            accentColor: Colors.blue[500], //AppColors.darkBlue,
             // fontFamily: 'TheSansArabic',
           ),
 

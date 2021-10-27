@@ -12,12 +12,15 @@ class Task extends StatefulWidget {
   final String description;
   final Color color;
   final int id;
+  final bool compact;
+
   Task(
       {Key? key,
       this.id = -1,
       this.title = "Unnamed Task",
       this.description = "No description",
-      this.color = ColorsList.cyan})
+      this.color = ColorsList.cyan,
+      this.compact = false})
       : super(key: key);
 
   @override
@@ -28,19 +31,21 @@ class _TaskState extends State<Task> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+      padding: EdgeInsets.symmetric(vertical: widget.compact ? 5 : 10),
       child: Container(
         padding: EdgeInsets.symmetric(
           horizontal: 20,
         ),
         child: OpenContainer(
+          // closedColor: Colors.transparent,
           closedBuilder: (context, action) {
             return Container(
               child: Row(
                 children: [
                   Container(
                     width: 10,
-                    height: 120,
+                    height: widget.compact ? 70 : 120,
+                    // height: 120,
                     color: widget.color,
                   ),
                   SizedBox(
@@ -52,7 +57,7 @@ class _TaskState extends State<Task> {
                       Text(
                         widget.title,
                         style: TextStyle(
-                          fontSize: 25,
+                          fontSize: widget.compact ? 20 : 25,
                           fontWeight: FontWeight.bold,
                           color: Colors.grey.shade700,
                         ),
@@ -60,7 +65,7 @@ class _TaskState extends State<Task> {
                       Container(
                         // height: 50,
                         width: 300,
-                        child: widget.description.isEmpty
+                        child: widget.description.isEmpty || widget.compact
                             ? null
                             : Text(
                                 widget.description.substring(0,

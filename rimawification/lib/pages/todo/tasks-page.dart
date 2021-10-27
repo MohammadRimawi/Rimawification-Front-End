@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -22,6 +23,8 @@ class TasksPage extends StatefulWidget {
 
 class _TasksPageState extends State<TasksPage> {
   late Future<List<Task_obj>> futureTask;
+  bool archived = false;
+  bool compact = false;
 
   @override
   void initState() {
@@ -33,7 +36,7 @@ class _TasksPageState extends State<TasksPage> {
     //======================
     print("loading tasks");
 
-    futureTask = Task_obj.loadTasks();
+    futureTask = Task_obj.loadTasks(archived: archived);
     super.initState();
   }
 
@@ -59,6 +62,31 @@ class _TasksPageState extends State<TasksPage> {
         title: Text(
           "Tasks",
         ),
+        actions: [
+          IconButton(
+            icon: compact
+                ? Icon(Icons.calendar_view_day_rounded)
+                : Icon(Icons.calendar_view_day_sharp),
+            tooltip: compact ? 'Expand' : 'Compact',
+            onPressed: () {
+              setState(() {
+                compact = !compact;
+              });
+            },
+          ),
+          IconButton(
+            icon: archived
+                ? Icon(Icons.outbox_sharp)
+                : Icon(Icons.outbox_outlined),
+            tooltip: archived ? 'Hide Archived' : 'Show Archived',
+            onPressed: () {
+              setState(() {
+                archived = !archived;
+                futureTask = Task_obj.loadTasks(archived: archived);
+              });
+            },
+          ),
+        ],
         centerTitle: true,
       ),
       body: Center(
@@ -67,14 +95,13 @@ class _TasksPageState extends State<TasksPage> {
           builder: (context, taskSnap) {
             if (taskSnap.connectionState == ConnectionState.none &&
                 taskSnap.hasData == null) {
-              //print('project snapshot data is: ${projectSnap.data}');
               return Container();
             }
             print(taskSnap.data);
             return RefreshIndicator(
               onRefresh: () {
                 setState(() {
-                  futureTask = Task_obj.loadTasks();
+                  futureTask = Task_obj.loadTasks(archived: archived);
                 });
 
                 return futureTask;
@@ -144,7 +171,7 @@ class _TasksPageState extends State<TasksPage> {
                     actionPane: SlidableDrawerActionPane(),
                     actions: [
                       IconSlideAction(
-                        icon: Icons.archive,
+                        icon: task.archived ? Icons.unarchive : Icons.archive,
                         color: task.color,
                         onTap: () async {
                           await updateArchiveTask(task.id, !task.archived);
@@ -209,103 +236,13 @@ class _TasksPageState extends State<TasksPage> {
                     ],
                     key: UniqueKey(),
                     child: Task(
-                        title: task.title,
-                        description: task.description,
-                        color: task.color,
-                        id: task.id),
+                      title: task.title,
+                      description: task.description,
+                      color: task.color,
+                      id: task.id,
+                      compact: compact,
+                    ),
                   );
-
-                  // return Container(
-                  //   // padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-                  //   child: Dismissible(
-                  //     background: Container(
-                  //       padding: EdgeInsets.only(left: 50),
-                  //       child: Icon(Icons.archive),
-                  //       color: ColorsList.blueGrey,
-                  //       alignment: Alignment.centerLeft,
-                  //     ),
-                  //     secondaryBackground: Container(
-                  //       padding: EdgeInsets.only(right: 50),
-                  //       child: Icon(Icons.delete),
-                  //       color: ColorsList.blueGrey,
-                  //       alignment: Alignment.centerRight,
-                  //     ),
-                  //     onDismissed: (direction) async {
-                  //       if (direction == DismissDirection.startToEnd) {
-                  // await archiveTask(task.id, !task.archived);
-                  //         final snackBar = SnackBar(
-                  //           content: Text("Archived!"),
-                  //           action: SnackBarAction(
-                  //             label: 'Undo',
-                  //             onPressed: () {
-                  //               // Some code to undo the change.
-                  //             },
-                  //           ),
-                  //         );
-                  //         ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  //       } else {
-                  //         showDialog(
-                  //           context: context,
-                  //           builder: (context) {
-                  //             return AlertDialog(
-                  //               title: Text('Jarvis Alert!'),
-                  //               content: Text(
-                  //                   'Are you sure you want to permanently delete this task?'),
-                  //               actions: [
-                  //                 TextButton(
-                  //                   child: Text('No'),
-                  //                   onPressed: () {
-                  //                     final snackBar = SnackBar(
-                  //                       content: Text("Was not Deleted!"),
-                  //                       action: SnackBarAction(
-                  //                         label: 'Undo',
-                  //                         onPressed: () {
-                  //                           // Some code to undo the change.
-                  //                         },
-                  //                       ),
-                  //                     );
-                  //                     ScaffoldMessenger.of(context)
-                  //                         .showSnackBar(snackBar);
-                  //                     Navigator.pop(context);
-                  //                     setState(() {});
-                  //                   },
-                  //                 ),
-                  //                 TextButton(
-                  //                   child: Text('Yes'),
-                  //                   onPressed: () async {
-                  //                     await deleteTask(task.id);
-                  //                     final snackBar = SnackBar(
-                  //                       content: Text("Deleted!"),
-                  //                       action: SnackBarAction(
-                  //                         label: 'Undo',
-                  //                         onPressed: () {
-                  //                           // Some code to undo the change.
-                  //                         },
-                  //                       ),
-                  //                     );
-                  //                     ScaffoldMessenger.of(context)
-                  //                         .showSnackBar(snackBar);
-                  //                     Navigator.pop(context);
-
-                  //                     setState(() {
-                  //                       Task_obj.All_Tasks.removeAt(index);
-                  //                     });
-                  //                   },
-                  //                 )
-                  //               ],
-                  //             );
-                  //           },
-                  //         );
-                  //       }
-                  //     },
-                  //     key: UniqueKey(),
-                  //     child: Task(
-                  //         title: task.title,
-                  //         description: task.description,
-                  //         color: task.color,
-                  //         id: task.id),
-                  //   ),
-                  // );
                 },
               ),
             );

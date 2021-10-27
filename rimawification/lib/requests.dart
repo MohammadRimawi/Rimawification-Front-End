@@ -168,6 +168,13 @@ Future<void> updateTodoChecked(int todo_id, bool status) async {
   );
 }
 
+Future<void> updateTodoPinned(int todo_id, bool status) async {
+  await REQUESTS.POST(
+    'http://rimawi.me:5050/api/update/todo/pinned',
+    {'todo_id': todo_id.toString(), 'pinned': status},
+  );
+}
+
 Future<void> updateTodoText(int todo_id, String text) async {
   await REQUESTS.POST(
     'http://rimawi.me:5050/api/update/todo/text',
