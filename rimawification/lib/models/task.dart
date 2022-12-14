@@ -34,7 +34,7 @@ class Todo_obj {
   static Future<Map<String, dynamic>> loadTask(int task_id,
       {bool archived = false}) async {
     final response = await http.post(Uri.parse(
-        'http://rimawi.me:5050/api/get/task/' +
+        'https://varla.rimawi.me/api/get/task/' +
             task_id.toString() +
             (archived ? "/1" : "")));
 
@@ -43,7 +43,7 @@ class Todo_obj {
 
   static Future<List<dynamic>> loadPinned() async {
     final response = await http
-        .post(Uri.parse('http://rimawi.me:5050/api/get/pinned_todos'));
+        .post(Uri.parse('https://varla.rimawi.me/api/get/pinned_todos'));
     // print(jsonDecode(response.body)['data']);
     return jsonDecode(response.body)['data'];
   }
@@ -91,7 +91,7 @@ class Task_obj {
   static Future<List<Task_obj>> loadTasks({bool archived = false}) async {
     All_Tasks = [];
     final response = await http.post(Uri.parse(
-        'http://rimawi.me:5050/api/get/tasks' + (archived ? "/1" : "")));
+        'https://varla.rimawi.me/api/get/tasks' + (archived ? "/1" : "")));
 
     if (response.statusCode == 200) {
       var Tasks = jsonDecode(response.body);
