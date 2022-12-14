@@ -34,7 +34,7 @@ class Todo_obj {
   static Future<Map<String, dynamic>> loadTask(int task_id,
       {bool archived = false}) async {
     final response = await http.post(Uri.parse(
-        'https://varla.rimawi.me/api/get/task/' +
+        'https://varla.rimawi.me/v1/api/get/task/' +
             task_id.toString() +
             (archived ? "/1" : "")));
 
@@ -43,7 +43,7 @@ class Todo_obj {
 
   static Future<List<dynamic>> loadPinned() async {
     final response = await http
-        .post(Uri.parse('https://varla.rimawi.me/api/get/pinned_todos'));
+        .post(Uri.parse('https://varla.rimawi.me/v1/api/get/pinned_todos'));
     // print(jsonDecode(response.body)['data']);
     return jsonDecode(response.body)['data'];
   }
@@ -65,19 +65,7 @@ class Task_obj {
 
   static List<Task_obj> All_Tasks = [];
 
-  // static Future<http.Response> getTasks() async {
-  //   return http.post(
-  //     Uri.parse('http://192.168.1.18:5001/api/get/all_tracks'),
-  //     headers: <String, String>{
-  //       'Content-Type': 'application/json; charset=UTF-8',
-  //     },
-  //   );
-  // }
-
   factory Task_obj.fromJson(Map<String, dynamic> json) {
-    // print();
-    // Color c = ColorsMap.val['red'];
-    // print(c);
 
     return Task_obj(
       title: json['title'],
@@ -91,7 +79,7 @@ class Task_obj {
   static Future<List<Task_obj>> loadTasks({bool archived = false}) async {
     All_Tasks = [];
     final response = await http.post(Uri.parse(
-        'https://varla.rimawi.me/api/get/tasks' + (archived ? "/1" : "")));
+        'https://varla.rimawi.me/v1/api/get/tasks' + (archived ? "/1" : "")));
 
     if (response.statusCode == 200) {
       var Tasks = jsonDecode(response.body);
